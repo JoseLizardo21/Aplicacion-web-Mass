@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React from 'react'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import Home from './routes/Home'
+import {modifySession} from './feachures/auth/authSlice'
+import {useSelector, useDispatch} from 'react-redux'
+const routes = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home/>
+  }
+]);
+const isLoggedIn = async()=>{
+  const res = await this.API.get('api', {
+    mode: 'cors',
+    credentials: 'include'
+  });
+  return res.isLoggedIn;
+}
 function App() {
+  const session = useSelector(state=>state.auth);
+  const dispatch = useDispatch();
+  dispatch(modifySession())
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <RouterProvider router={routes}/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
