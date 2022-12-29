@@ -1,11 +1,12 @@
 import React, {Component} from "react";
+import { useNavigate } from "react-router-dom";
 import '../styles/stylesCards/verificationCode.css';
 import {helpFetch} from '../helpers/helpFetch';
 
 class VerificationCodeCard extends Component{
     constructor(){
         super();
-        this.API = helpFetch;
+        this.API = helpFetch();
     }
     envCode = async(e)=>{
         e.preventDefault();
@@ -14,8 +15,7 @@ class VerificationCodeCard extends Component{
             code: code.value
         }
         const res = await this.API.post('VerifyAccount',{
-            mode: 'cors',
-            credentials: 'include',
+            method: 'POST',
             body: codeEnv
         });
         console.log(res.success)

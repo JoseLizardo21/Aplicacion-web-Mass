@@ -1,19 +1,29 @@
-import React, {Component} from 'react'
-import MASS_LOGO from '../public/imgs/icons-logos/MASS_LOGO.png'
-import '../public/styles/navStyles.css'
-import { helpFetch } from '../helpers/helpFetch';
+import React, {Component} from 'react';
+import MASS_LOGO from '../../public/imgs/icons-logos/MASS_LOGO.png'
+import '../../public/styles/navStyles.css'
+import { helpFetch } from '../../helpers/helpFetch';
+import { useDispatch} from 'react-redux';
+import { getAuth } from '../../feachures/auth/authSlice';
 
-class Nav extends Component {
-  constructor(props){
-    super(props);
-    this.API = helpFetch;
-    this.state = {Home: true, envGmail: false};
+
+function Nav(){
+  const dispatch = useDispatch();
+  const API = helpFetch();
+  const submitLogIn = async(e)=>{
+    e.preventDefault();
+    const {email, password} = e.target;
+    const user = {
+      username: "user",
+      email: email.value,
+      password: password.value
+    }
+    const res = await API.post('signIn', {
+      method: 'POST',
+      body: user
+    });
+    dispatch(getAuth());
   }
-  async componentDidMount(){
-    const res = await this.API.get('api')
-    this.setState({Home: res.response});
-  }
-  submitRegis = async(e)=>{
+  const submitRegis = async(e)=>{
     e.preventDefault();
     const {username, email, password} = e.target;
     const newUser = {
@@ -21,16 +31,14 @@ class Nav extends Component {
       email: email.value,
       password: password.value
     }
-    const res = await this.API.post('signUp', {
-      mode: 'cors',
-      credentials: 'include',
-      body: newUser
+    const res = await API.post('signUp', {
+      method: 'POST',
+      body: newUser,
     })
     this.props.modifyCardCode(res.success);
   }
-  render(){
-    return (
-      <nav className="navbar navbar-expand-lg bg-light">
+  return(
+    <nav className="navbar navbar-expand-lg bg-light">
           <div className="container-fluid">
               <a className='navbar-brand' href='#'>
                   <img src={MASS_LOGO} id='iconMass'/>
@@ -43,20 +51,19 @@ class Nav extends Component {
                     <button type="button" className="border-0 bg-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                       INICIO
                     </button>
-                    <form 
+                    <form
                     className='dropdown-menu dropdown-menu-end p-4' 
                     style={{width: '350px'}}
-                    action=''
-                    >
+                    onSubmit={submitLogIn}>
                       <div className="mb-3">
                         <label htmlFor="exampleDropdownFormEmail" className="form-label">Email</label>
-                        <input type="email" className="form-control" id="exampleDropdownFormEmail" placeholder="email@example.com"/>
+                        <input name='email' type="email" className="form-control" id="exampleDropdownFormEmail" placeholder="email@example.com"/>
                       </div>
                       <div className="mb-3">
                         <label htmlFor="exampleDropdownFormPassword" className="form-label">Password</label>
-                        <input type="password" className="form-control" id="exampleDropdownFormPassword" placeholder="Password"/>
+                        <input name='password' type="password" className="form-control" id="exampleDropdownFormPassword" placeholder="Password"/>
                       </div>
-                      <button className='btn btn-success w-100'>INICIO</button>
+                      <button className='btn btn-success w-100' type='submit'>INICIO</button>
                     </form>
                   </div>
 
@@ -64,7 +71,7 @@ class Nav extends Component {
                     <button type="button" className="border-0 bg-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                       REGISTRATE
                     </button>
-                    <form className='dropdown-menu dropdown-menu-end p-4' style={{width: '350px'}} onSubmit={this.submitRegis}>
+                    <form className='dropdown-menu dropdown-menu-end p-4' style={{width: '350px'}} onSubmit={submitRegis}>
                       <div className='mb-3'>
                         <label htmlFor='username' className='form-label'>Username</label>
                         <input type='text' name='username' className='form-control' id='usernameRegis' placeholder='Username'/>
@@ -87,8 +94,6 @@ class Nav extends Component {
               </div>
           </div>
       </nav>
-    )
-  }
+  )
 }
-
 export default Nav

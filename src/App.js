@@ -1,25 +1,23 @@
 import React from 'react'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
-import Home from './routes/Home'
-import {modifySession} from './feachures/auth/authSlice'
-import {useSelector, useDispatch} from 'react-redux'
+import Home from './routes/Home';
+import Start from './routes/Start';
+import { useDispatch} from 'react-redux';
+import { getAuth } from './feachures/auth/authSlice';
 const routes = createBrowserRouter([
   {
     path: '/',
+    element: <Start/>
+  },
+  {
+    path: '/home',
     element: <Home/>
   }
 ]);
-const isLoggedIn = async()=>{
-  const res = await this.API.get('api', {
-    mode: 'cors',
-    credentials: 'include'
-  });
-  return res.isLoggedIn;
-}
+
 function App() {
-  const session = useSelector(state=>state.auth);
   const dispatch = useDispatch();
-  dispatch(modifySession())
+  dispatch(getAuth());
   return (
     <div>
       <RouterProvider router={routes}/>
